@@ -18,7 +18,5 @@
 
 - 匹配：`https://x.com/*`、`https://twitter.com/*`
 - 权限：`GM_addStyle`
-- 选择器实录：[docs/selectors.md](docs/selectors.md)
-- 规格：一期 [tasks/specs/2026-07-20-x-ux-css-spec.md](tasks/specs/2026-07-20-x-ux-css-spec.md)；二期 [tasks/specs/2026-07-20-x-reading-enhance-v2-spec.md](tasks/specs/2026-07-20-x-reading-enhance-v2-spec.md)
 
 验证建议：登录后在 1280 / 1440 / 1920 查看首页、个人主页、帖子详情；主栏应明显宽于默认且右白减少，右下 Grok/消息浮钮消失，左导航仍在；站内跳转后样式应仍在。
