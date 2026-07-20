@@ -12,13 +12,13 @@
 
 | 脚本 | 路径 | 说明 |
 |------|------|------|
-| X: 阅读增强 | [`X/XReadingEnhance.user.js`](X/XReadingEnhance.user.js) | 隐藏右侧推荐栏、加宽信息流、优化帖子间距/行高/媒体圆角（仅 CSS） |
+| X: 阅读增强 | [`X/XReadingEnhance.user.js`](X/XReadingEnhance.user.js) | 隐藏右栏与右下浮钮、主栏/内层同宽加宽、加压间距/行高/媒体高度（仅 CSS） |
 
 ### X: 阅读增强
 
 - 匹配：`https://x.com/*`、`https://twitter.com/*`
 - 权限：`GM_addStyle`
 - 选择器实录：[docs/selectors.md](docs/selectors.md)
-- 规格：[docs/superpowers/specs/2026-07-20-x-ux-css-spec.md](docs/superpowers/specs/2026-07-20-x-ux-css-spec.md)
+- 规格：一期 [docs/superpowers/specs/2026-07-20-x-ux-css-spec.md](docs/superpowers/specs/2026-07-20-x-ux-css-spec.md)；二期 [docs/superpowers/specs/2026-07-20-x-reading-enhance-v2-spec.md](docs/superpowers/specs/2026-07-20-x-reading-enhance-v2-spec.md)
 
-验证建议：在 1280 / 1440 / 1920 宽度下查看首页、个人主页、帖子详情；站内跳转后样式应仍在。
+验证建议：登录后在 1280 / 1440 / 1920 查看首页、个人主页、帖子详情；主栏应明显宽于默认且右白减少，右下 Grok/消息浮钮消失，左导航仍在；站内跳转后样式应仍在。

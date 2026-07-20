@@ -61,15 +61,42 @@ article[data-testid="tweet"]
 
 公开页实测上述 testid **均不存在**；保留是为登录后旧壳降级。
 
-### 2.3 帖子 / 媒体（新版）
+### 2.3 主栏内层 600 约束（二期对齐）
+
+加宽 `main` 后，顶栏 sticky 会跟 `main` 变宽，但时间线/输入区仍被内层卡住：
+
+```text
+div.mx-auto.w-full.max-w-[600px]
+```
+
+脚本选择器（避免 attribute 里写 `]`）：
+
+```css
+main div[class*="mx-auto"][class*="w-full"][class*="max-w-"]
+```
+
+覆盖为 `max-width: 100%; width: 100%;` 后，顶栏 / 内层 / `article` 宽度对齐。公开主页 1440 实测：main≈1165，内层与 sticky≈1163，article≈1131。
+
+### 2.4 帖子 / 媒体（新版）
 
 | 目标 | 选择器 | 说明 |
 |------|--------|------|
 | 帖子块 | `article` | 主栏内帖子容器；无 `data-testid="tweet"` |
 | 帖子 id | `[data-tweet-id]` | 存在于帖子树内 |
 | 正文 | `article div[lang]`、`article [dir="auto"]` | 无独立 tweetText testid |
-| 媒体 | `article img` | 无 tweetPhoto testid；圆角作用于此 |
+| 媒体 | `article img` | 无 tweetPhoto testid；圆角 / max-height 作用于此 |
 | 互动 | `aria-label`：`Reply` / `Repost` / `Like` / `Bookmark` / `Share` | 仅识别用，脚本不操作 |
+
+### 2.5 右下浮钮（登录态；二期减干扰）
+
+公开未登录页通常**不渲染**下列节点。钩子来自社区长期使用的 `data-testid`（与左栏导航入口分离，勿用 `a[aria-label="Grok"]` 等导航链）。
+
+| 目标 | 选择器 | 说明 |
+|------|--------|------|
+| Grok 浮层/浮钮 | `[data-testid="GrokDrawer"]` | 右下 Grok；藏容器即可 |
+| 消息浮层/浮钮 | `[data-testid="DMDrawer"]` | 右下消息；藏容器即可 |
+
+手动验收：登录后打开 `/home`，右下两圆钮应消失；左侧「Grok」「聊天」导航仍在。
 
 ## 3. 排除项（禁止依赖）
 
@@ -78,9 +105,9 @@ article[data-testid="tweet"]
 - attribute 选择器中带未转义 `]` 的完整 Tailwind 任意值（如 `one-col:w-[600px]` 整段）
 - 依赖未登录底部蓝条、登录墙 DOM
 
-## 4. CSS 注入验收（2026-07-20）
+## 4. CSS 注入验收
 
-注入后公开主页 / 详情（无需 `!important`）：
+### 4.1 一期（2026-07-20，主栏硬宽 920）
 
 | 视口 | 导航宽 | 主栏宽 | aside |
 |------|--------|--------|-------|
@@ -88,12 +115,32 @@ article[data-testid="tweet"]
 | 1440 | 275 | 920 | `display: none` |
 | 1920 | 275 | 920 | `display: none` |
 
-站内从个人主页进入 `/status/...` 后，重新注入同样规则仍生效（油猴 `GM_addStyle` 挂在 document，SPA 软导航可持续）。
+### 4.2 二期（0.2.0–0.2.1：根 max 1600、主栏 flex + max 1200、内层 600 拉满）
+
+公开主页 `https://x.com/X` 注入后实测（2026-07-20 Playwright）：
+
+| 视口 | 根宽 | 导航宽 | 主栏宽 | aside |
+|------|------|--------|--------|-------|
+| 1280 | 1280 | 88 | 1192 | `display: none` |
+| 1440 | 1440 | 275 | 1165 | `display: none` |
+| 1920 | 1600 | 275 | 1200 | `display: none` |
+
+详情页 1440：主栏 1165，aside 隐藏（同壳）。相对一期主栏 920，右白明显收窄。
+
+0.2.1 对齐：内层 `max-w-[600px]` 覆盖为 100% 后，顶栏/内层/`article` 与 `main` 同宽。
+
+0.2.2 居中：`main` 改为 `flex: 0 1 auto` + `width/max-width: min(1000px,100%)` + `margin-inline: auto`，根加 `justify-content: center`。1920 实测导航右侧空隙与主栏右侧空隙对称（约 163px），主栏不再贴导航拉满。
+
+密度抽查：`article img` `max-height`≈630px（900 高视口的 70vh）；正文计算行高约 21px（`line-height: 1.4`）。
+
+浮钮：未登录公开页无 `GrokDrawer` / `DMDrawer` 节点（预期）；登录态手动确认 `display: none`，且左栏 Grok/聊天入口仍在。
+
+站内从个人主页进入 `/status/...` 后，`GM_addStyle` 仍生效。
 
 未登录访问 `/search`、`/notifications`、`/home` 会跳到 onboarding 登录页，无三栏布局可测；选择器与登录后同壳页面共用（`main`/`aside`）。
 
-截图产物（本地，不入库）：`X/_inspect-out/verify-profile-{1280,1440,1920}.png`、`verify-status-1440.png`。
+截图产物（本地，不入库）：`X/_inspect-out/verify-v2-profile-{1280,1440,1920}.png`、`verify-v2-status-1440.png`、`verify-v2-summary.json`。
 
 ## 5. `!important`
 
-当前实测：`aside { display: none }` 与 `main` 的 `width`/`max-width` **无需** `!important` 即可覆盖 Tailwind 工具类。若日后站点特异性升高再补，并在此记录原因。
+当前实测：`aside { display: none }` 与 `main` 的 `width`/`max-width`/`flex` **无需** `!important` 即可覆盖 Tailwind 工具类。若日后站点特异性升高再补，并在此记录原因。
