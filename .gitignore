@@ -4,3 +4,8 @@
 .vscode/
 *.local
 node_modules/
+
+# 本地 DOM 实测产物（不入库）
+X/_inspect-out/
+X/_chrome-profile-copy/
+X/_inspect*.mjs
