@@ -4,7 +4,7 @@
 
 一期已隐藏右栏并将主栏加到约 920px，但宽屏仍大量右白、阅读密度偏疏，右下 Grok/消息浮钮落在空白区更显干扰。需要在纯 CSS 前提下做布局吃满、加压密度、减干扰。
 
-一期规格：`docs/superpowers/specs/2026-07-20-x-ux-css-spec.md`。
+一期规格：`tasks/specs/2026-07-20-x-ux-css-spec.md`。
 
 ## 目标
 
