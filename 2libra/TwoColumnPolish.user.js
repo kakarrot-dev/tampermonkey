@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         2Libra: V2EX 风格双栏
 // @namespace    https://github.com/kakarrot-dev/tampermonkey
-// @version      0.1.0
+// @version      0.1.1
 // @description  将 2Libra 调整为 V2EX Polish 风格的紧凑双栏、帖子正文与回复布局
 // @author       kakarrot
 // @match        https://2libra.com/*
@@ -17,6 +17,7 @@
     left: 'kk-2libra-left',
     main: 'kk-2libra-main',
     right: 'kk-2libra-right',
+    profile: 'kk-2libra-profile',
     post: 'kk-2libra-post',
     reply: 'kk-2libra-reply',
     replyFirst: 'kk-2libra-reply-first',
@@ -40,6 +41,10 @@
     main.classList.add(CLASS.main);
     left?.classList.add(CLASS.left);
     right?.classList.add(CLASS.right);
+    right
+      ?.querySelector('a[href="/user/setting/profile"]')
+      ?.closest('.card')
+      ?.classList.add(CLASS.profile);
 
     document.querySelector('.post-body')?.classList.add(CLASS.post);
     const replyCards = Array.from(document.querySelectorAll('article.c-item'))
@@ -212,6 +217,110 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   font-size: 12px;
 }
 
+.kk-2libra-profile > .card-body {
+  display: block;
+}
+
+.kk-2libra-profile > .card-body > :first-child {
+  min-height: 64px;
+  padding: 9px 10px !important;
+}
+
+.kk-2libra-profile > .card-body > :first-child > div {
+  min-width: 0;
+}
+
+.kk-2libra-profile > .card-body > :first-child > div > div:first-child {
+  flex: 0 0 40px;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+}
+
+.kk-2libra-profile > .card-body > :first-child > div > div:first-child > div {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.kk-2libra-profile > .card-body > :first-child > div > div:last-child {
+  min-width: 0;
+}
+
+.kk-2libra-profile > .card-body > :first-child .text-gray-400 {
+  display: block;
+  max-width: 158px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kk-2libra-profile > .card-body > :first-child > a {
+  flex: 0 0 30px;
+  width: 30px;
+  min-height: 30px;
+  padding: 0 !important;
+}
+
+.kk-2libra-profile > .card-body > :nth-child(2) {
+  min-height: 42px;
+  padding: 7px 10px 9px !important;
+}
+
+.kk-2libra-profile > .card-body > :nth-child(2) > div:first-child {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.kk-2libra-profile > .card-body > :nth-child(2) > div:first-child > div {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.kk-2libra-profile > .card-body > :nth-child(2) :is(span, number-flow-react) {
+  font-size: 11px;
+}
+
+.kk-2libra-profile > .card-body > :nth-child(3) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  min-height: 38px;
+  padding: 4px 10px !important;
+}
+
+.kk-2libra-profile > .card-body > :nth-child(3) > div {
+  gap: 5px !important;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.kk-2libra-profile > .card-body > :last-child {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px !important;
+  margin-bottom: 0 !important;
+  padding: 7px 10px 9px !important;
+}
+
+.kk-2libra-profile > .card-body > :last-child > div:last-child,
+.kk-2libra-profile > .card-body > :last-child > div:last-child > div {
+  display: contents;
+}
+
+.kk-2libra-profile .btn {
+  min-height: 30px;
+  height: 30px;
+  padding-inline: 7px !important;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.kk-2libra-profile > .card-body > :last-child .btn {
+  width: 100%;
+}
+
 .kk-2libra-post {
   border: 1px solid var(--kk-2libra-border) !important;
   border-radius: var(--kk-2libra-radius) !important;
@@ -246,20 +355,36 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   font-size: 12px;
 }
 
-.kk-2libra-reply {
+.kk-2libra-main .card.kk-2libra-reply {
   margin-block: 0 !important;
   border-width: 0 1px 1px !important;
+  border-style: solid !important;
   border-color: var(--kk-2libra-border) !important;
   border-radius: 0 !important;
   box-shadow: none !important;
 }
 
-.kk-2libra-reply-first {
+.kk-2libra-main .card.kk-2libra-reply-first {
   border-top-width: 1px !important;
   border-radius: var(--kk-2libra-radius) var(--kk-2libra-radius) 0 0 !important;
 }
 
-.kk-2libra-reply-last {
+.kk-2libra-main .card.kk-2libra-reply-last {
+  border-radius: 0 0 var(--kk-2libra-radius) var(--kk-2libra-radius) !important;
+}
+
+.kk-2libra-main .kk-2libra-reply > .rounded-xl,
+.kk-2libra-main .kk-2libra-reply > .rounded-xl > .rounded-xl {
+  border-radius: 0 !important;
+}
+
+.kk-2libra-main .kk-2libra-reply-first > .rounded-xl,
+.kk-2libra-main .kk-2libra-reply-first > .rounded-xl > .rounded-xl {
+  border-radius: var(--kk-2libra-radius) var(--kk-2libra-radius) 0 0 !important;
+}
+
+.kk-2libra-main .kk-2libra-reply-last > .rounded-xl,
+.kk-2libra-main .kk-2libra-reply-last > .rounded-xl > .rounded-xl {
   border-radius: 0 0 var(--kk-2libra-radius) var(--kk-2libra-radius) !important;
 }
 
