@@ -1,31 +1,90 @@
-# tampermonkey
+<div align="center">
+  <img src="assets/repository-logo.png" alt="Tampermonkey Scripts logo" width="112">
+  <h1>Tampermonkey Scripts</h1>
+  <p>Small, site-specific userscripts for a quieter and more useful web.</p>
+  <p><a href="README.zh-CN.md">简体中文</a> · English</p>
 
-个人 Tampermonkey / Violentmonkey 用户脚本仓库。
+  <p>
+    <a href="https://www.tampermonkey.net/"><img src="https://img.shields.io/badge/Tampermonkey-compatible-b7791f?style=flat-square" alt="Tampermonkey compatible"></a>
+    <a href="https://violentmonkey.github.io/"><img src="https://img.shields.io/badge/Violentmonkey-compatible-2c6f75?style=flat-square" alt="Violentmonkey compatible"></a>
+    <img src="https://img.shields.io/badge/JavaScript-ES2018%2B-29271d?style=flat-square" alt="JavaScript ES2018+">
+    <img src="https://img.shields.io/badge/userscripts-3-f5f3e9?style=flat-square&amp;labelColor=403d36" alt="3 userscripts">
+    <img src="https://img.shields.io/badge/build-none-f5f3e9?style=flat-square&amp;labelColor=403d36" alt="No build step">
+  </p>
+</div>
 
-## 安装
+![Browser pages refined by userscripts](assets/repository-banner.png)
 
-1. 安装 [Tampermonkey](https://www.tampermonkey.net/) 或兼容扩展
-2. 打开对应 `.user.js`，按扩展提示安装
-3. 改 metadata（`@version` / `@match` / `@grant`）后需重新安装或点更新
+This repository keeps personal Tampermonkey and Violentmonkey scripts in plain JavaScript. Each script has one site or one clear job. The `.user.js` source is also the installable artifact, so there is no build step or package manager.
 
-## 脚本索引
+## Tags
 
-| 脚本        | 路径                                                     | 说明                                                                    |
-| ----------- | -------------------------------------------------------- | ----------------------------------------------------------------------- |
-| X: 阅读增强 | [`X/XReadingEnhance.user.js`](X/XReadingEnhance.user.js) | 隐藏右栏与右下浮钮、主栏/内层同宽加宽、加压间距/行高/媒体高度（仅 CSS） |
-| 2Libra: V2EX 风格双栏 | [`2libra/TwoColumnPolish.user.js`](2libra/TwoColumnPolish.user.js) | 隐藏左栏，将列表、帖子正文和回复调整为 V2EX Polish 风格的紧凑双栏 |
+`tampermonkey` `violentmonkey` `userscript` `javascript` `browser-customization` `ui-polish` `2libra` `v2ex` `x-twitter`
 
-### X: 阅读增强
+## Scripts
 
-- 匹配：`https://x.com/*`、`https://twitter.com/*`
-- 权限：`GM_addStyle`
+| Script | Type | Matches | Version | Install |
+| --- | --- | --- | --- | --- |
+| X Reading Enhance | Original | `x.com`, `twitter.com` | `0.2.2` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/X/XReadingEnhance.user.js) |
+| 2Libra V2EX-style Two-column Layout | Original | `2libra.com` | `0.1.4` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/2libra/TwoColumnPolish.user.js) |
+| V2EX Polish | Third-party snapshot | `v2ex.com` | `2.0.6` | [Open source file](<V2EX/▲V2EX Polish - 体验更现代化的 V2EX 🟢-2.0.6.user.js>) · [Upstream](https://v2p.leoku.dev/) |
 
-验证建议：登录后在 1280 / 1440 / 1920 查看首页、个人主页、帖子详情；主栏应明显宽于默认且右白减少，右下 Grok/消息浮钮消失，左导航仍在；站内跳转后样式应仍在。
+### X Reading Enhance
 
-### 2Libra: V2EX 风格双栏
+Hides the right column and floating controls, widens the reading column, and tightens spacing, line height, and media height with CSS only.
 
-- 匹配：`https://2libra.com/*`
-- 权限：`GM_addStyle`
-- 参考：V2EX Polish 2.0.6 的布局和排版常量，不移植其功能逻辑
+- Grants: `GM_addStyle`
+- Source: [`X/XReadingEnhance.user.js`](X/XReadingEnhance.user.js)
+- Check after install: home, profile, and post detail pages at 1280, 1440, and 1920 pixels
 
-验证建议：登录后在 1440 / 1920 查看首页和帖子详情，页面应为约 805px 主栏加 270px 右栏，左导航隐藏；帖子列表、正文与回复采用 15px 内容和 12px 元信息，回复显示为连续分隔列表。375 / 768 宽度下应恢复单栏且无横向滚动。
+### 2Libra V2EX-style Two-column Layout
+
+Reworks 2Libra into an approximately 805 px main column plus a 270 px sidebar. It applies V2EX Polish-inspired spacing and typography to topic lists, topic details, replies, the profile panel, and the reply editor. At narrow widths it returns to one column.
+
+- Grants: `GM_addStyle`
+- Source: [`2libra/TwoColumnPolish.user.js`](2libra/TwoColumnPolish.user.js)
+- Check after install: home and topic detail pages at 1440 and 1920 pixels, plus 375 and 768 pixel responsive widths
+
+### V2EX Polish snapshot
+
+The file under `V2EX/` is an upstream script kept as a reference snapshot. It is not maintained as an original script in this repository. Its metadata identifies LeoKu as the author and MIT as the license. Prefer the [upstream project](https://v2p.leoku.dev/) for installation and updates.
+
+## Installation
+
+1. Install [Tampermonkey](https://www.tampermonkey.net/) or [Violentmonkey](https://violentmonkey.github.io/).
+2. Open an original script's raw install link from the table above.
+3. Review the match patterns and granted permissions, then confirm installation.
+4. Hard-refresh a matching page.
+
+When metadata such as `@version`, `@match`, or `@grant` changes, update or reinstall the script in the userscript manager.
+
+## Development
+
+There are no dependencies, build tasks, or generated bundles.
+
+```text
+edit <site>/<name>.user.js
+install or update it in the userscript manager
+open a matching URL
+hard-refresh and verify the visible behavior
+```
+
+Keep permissions narrow, guard DOM queries, and account for SPA navigation when a site changes routes without a full reload. See [`AGENTS.md`](AGENTS.md) for repository conventions and [`CLAUDE.md`](CLAUDE.md) for the Claude Code entry point.
+
+## Contributing
+
+This is a maintainer-first personal repository, but focused fixes are welcome. Keep each script scoped to one site or task. Explain the affected URL, visible behavior, and manual verification in the pull request. Do not add dependencies or broaden `@match`, `@grant`, or `@connect` without a concrete need.
+
+## Security and privacy
+
+The original scripts in this repository do not contain API keys, cookies, or account credentials. Review every userscript before installing it. A userscript runs inside matching pages and can interact with their DOM.
+
+Report a security issue privately to the repository owner instead of opening a public issue with credentials or personal data.
+
+## License
+
+No repository-wide license has been declared for the original scripts yet. The bundled V2EX Polish snapshot retains its upstream MIT license and authorship metadata. Do not assume that the third-party license applies to the rest of this repository.
+
+## Visual identity
+
+The repository logo and banner use the [Claude Cream](https://github.com/kakarrot-dev/claude-cream) palette: warm cream surfaces, ink text, amber accents, and restrained teal. Both assets are stored in [`assets/`](assets/).
