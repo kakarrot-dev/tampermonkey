@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         2Libra: V2EX 风格双栏
 // @namespace    https://github.com/kakarrot-dev/tampermonkey
-// @version      0.1.3
+// @version      0.1.4
 // @description  将 2Libra 调整为 V2EX Polish 风格的紧凑双栏、帖子正文与回复布局
 // @author       kakarrot
 // @match        https://2libra.com/*
@@ -150,9 +150,9 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 }
 
 .kk-2libra-main #post-list-ul > li {
-  min-height: 58px;
+  min-height: 89px;
   gap: 10px !important;
-  padding: 9px 10px !important;
+  padding: 20px 10px !important;
   font-size: 14px;
   line-height: 1.45;
   border-color: var(--kk-2libra-border) !important;
@@ -183,19 +183,35 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   border-radius: 4px;
 }
 
+.kk-2libra-main #post-list-ul > li div.flex.items-center.gap-2:has(> a[href*="?commentId="]) {
+  display: none !important;
+}
+
+.kk-2libra-main #post-list-ul > li span[class~="w-[0.0625rem]"] {
+  display: none !important;
+}
+
 .kk-2libra-main #post-list-ul > li button > img {
-  width: 40px !important;
-  height: 40px !important;
+  width: 48px !important;
+  height: 48px !important;
   border-radius: 5px !important;
 }
 
 .kk-2libra-main #post-list-ul > li button:has(> img),
 .kk-2libra-reply article.c-item button:has(> img) {
-  min-width: 40px;
-  min-height: 40px;
   padding: 0 !important;
   line-height: 0;
   background: transparent;
+}
+
+.kk-2libra-main #post-list-ul > li button:has(> img) {
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.kk-2libra-reply article.c-item button:has(> img) {
+  min-width: 40px;
+  min-height: 40px;
 }
 
 .kk-2libra-right {
