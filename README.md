@@ -26,7 +26,7 @@ This repository keeps personal Tampermonkey and Violentmonkey scripts in plain J
 | Script | Type | Matches | Version | Install |
 | --- | --- | --- | --- | --- |
 | X Reading Enhance | Original | `x.com`, `twitter.com` | `0.2.2` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/X/XReadingEnhance.user.js) |
-| 2Libra V2EX-style Two-column Layout | Original | `2libra.com` | `0.1.4` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/2libra/TwoColumnPolish.user.js) |
+| 2Libra V2EX-style Two-column Layout | Original | `2libra.com` | `0.2.0` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/2libra/TwoColumnPolish.user.js) |
 | V2EX Polish | Third-party snapshot | `v2ex.com` | `2.0.6` | [Open source file](<V2EX/▲V2EX Polish - 体验更现代化的 V2EX 🟢-2.0.6.user.js>) · [Upstream](https://v2p.leoku.dev/) |
 
 ### X Reading Enhance
@@ -39,11 +39,11 @@ Hides the right column and floating controls, widens the reading column, and tig
 
 ### 2Libra V2EX-style Two-column Layout
 
-Reworks 2Libra into an approximately 805 px main column plus a 270 px sidebar. It applies V2EX Polish-inspired spacing and typography to topic lists, topic details, replies, the profile panel, and the reply editor. At narrow widths it returns to one column.
+Reworks 2Libra into an approximately 805 px main column plus a 270 px sidebar. It applies V2EX Polish-inspired spacing and typography to the topic composer, topic lists, topic details, replies, the profile panel, and the reply editor. At narrow widths it returns to one column.
 
 - Grants: `GM_addStyle`
 - Source: [`2libra/TwoColumnPolish.user.js`](2libra/TwoColumnPolish.user.js)
-- Check after install: home and topic detail pages at 1440 and 1920 pixels, plus 375 and 768 pixel responsive widths
+- Check after install: home, topic composer, and topic detail pages at 1440 and 1920 pixels, plus 375 and 768 pixel responsive widths
 
 ### V2EX Polish snapshot
 
