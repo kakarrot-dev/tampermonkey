@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         2Libra: V2EX 风格双栏
 // @namespace    https://github.com/kakarrot-dev/tampermonkey
-// @version      0.2.0
+// @version      0.2.2
 // @description  将 2Libra 调整为 V2EX Polish 风格的紧凑双栏、发帖、正文与回复布局
 // @author       kakarrot
 // @match        https://2libra.com/*
@@ -150,6 +150,10 @@
   --kk-2libra-column-gap: 25px;
   --kk-2libra-radius: 10px;
   --kk-2libra-shadow: 0 3px 5px rgb(0 0 0 / 4%);
+  --kk-2libra-sidebar-gap: 16px;
+  --kk-2libra-sidebar-padding: 10px;
+  --kk-2libra-sidebar-header-height: 40px;
+  --kk-2libra-sidebar-row-height: 42px;
 }
 
 html:has(.kk-2libra-shell),
@@ -279,17 +283,21 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 
 .kk-2libra-right > div,
 .kk-2libra-right .card {
-  margin-top: 20px !important;
+  margin-top: var(--kk-2libra-sidebar-gap) !important;
 }
 
 .kk-2libra-right .card :is(.card-body, [class*="card-body"]) {
   gap: 0;
 }
 
+.kk-2libra-right .card {
+  overflow: hidden;
+}
+
 .kk-2libra-right :is(h2, h3, h4) {
-  color: var(--kk-2libra-text);
+  color: var(--kk-2libra-secondary);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 20px;
 }
 
 .kk-2libra-right :is(time, small, .text-base-content\/60, .text-base-content\/50) {
@@ -302,8 +310,8 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 }
 
 .kk-2libra-profile > .card-body > :first-child {
-  min-height: 64px;
-  padding: 9px 10px !important;
+  min-height: 58px;
+  padding: 8px var(--kk-2libra-sidebar-padding) !important;
 }
 
 .kk-2libra-profile > .card-body > :first-child > div {
@@ -342,8 +350,8 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 }
 
 .kk-2libra-profile > .card-body > :nth-child(2) {
-  min-height: 42px;
-  padding: 7px 10px 9px !important;
+  min-height: 38px;
+  padding: 6px var(--kk-2libra-sidebar-padding) 8px !important;
 }
 
 .kk-2libra-profile > .card-body > :nth-child(2) > div:first-child {
@@ -366,8 +374,8 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 6px;
-  min-height: 38px;
-  padding: 4px 10px !important;
+  min-height: 36px;
+  padding: 3px var(--kk-2libra-sidebar-padding) !important;
 }
 
 .kk-2libra-profile > .card-body > :nth-child(3) > div {
@@ -381,7 +389,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px !important;
   margin-bottom: 0 !important;
-  padding: 7px 10px 9px !important;
+  padding: 6px var(--kk-2libra-sidebar-padding) 8px !important;
 }
 
 .kk-2libra-profile > .card-body > :last-child > div:last-child,
@@ -395,6 +403,83 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   padding-inline: 7px !important;
   font-size: 12px;
   white-space: nowrap;
+}
+
+.kk-2libra-right .card-body:has(> h4) > h4 {
+  box-sizing: border-box;
+  min-height: var(--kk-2libra-sidebar-header-height);
+  margin: 0;
+  padding: 10px var(--kk-2libra-sidebar-padding) 9px !important;
+  font-weight: 600;
+  border-bottom: 1px solid var(--kk-2libra-border);
+}
+
+.kk-2libra-right .card-body:has(> h4) > h4 a {
+  color: var(--kk-2libra-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.kk-2libra-right .card-body:has(> h4) > h4 + div > div {
+  box-sizing: border-box;
+  min-height: var(--kk-2libra-sidebar-row-height);
+  padding: 6px var(--kk-2libra-sidebar-padding) !important;
+  border-color: var(--kk-2libra-border) !important;
+}
+
+.kk-2libra-right .card-body:has(> h4) > h4 + div > div:last-child {
+  border-bottom: 0 !important;
+}
+
+.kk-2libra-right .card-body:has(> h4) > h4 + div > div > .flex.items-center.justify-between {
+  min-height: 29px;
+}
+
+.kk-2libra-right .card-body:has(> h4) > h4 + div button:has(img) {
+  flex: 0 0 28px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0 !important;
+  line-height: 0;
+  background: transparent;
+}
+
+.kk-2libra-right .card-body:has(> h4) > h4 + div button:has(img) :is(img, svg, canvas) {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 5px !important;
+}
+
+.kk-2libra-right .card-body:has(> h4) > h4 + div a[href^="/post/"] {
+  color: var(--kk-2libra-text);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  text-decoration: none;
+}
+
+.kk-2libra-right .card-body:has(> h4) > h4 + div .rounded-full {
+  min-width: 26px;
+  height: 22px;
+  padding-inline: 7px !important;
+  color: var(--kk-2libra-secondary);
+  font-size: 11px;
+  line-height: 22px;
+  background: var(--kk-2libra-subtle);
+  border-radius: 11px;
+}
+
+@media (hover: hover) {
+  .kk-2libra-right .card-body:has(> h4) > h4 + div > div:hover {
+    background: #f8fafc;
+  }
+
+  .kk-2libra-right .card-body:has(> h4) > h4 a:hover,
+  .kk-2libra-right .card-body:has(> h4) > h4 + div a[href^="/post/"]:hover {
+    color: var(--kk-2libra-text);
+    text-decoration: underline;
+  }
 }
 
 .kk-2libra-profile > .card-body > :last-child .btn {
@@ -756,8 +841,17 @@ body.kk-2libra-create {
 .kk-2libra-create-editor .w-md-editor-text-pre {
   padding: 14px 16px !important;
   color: var(--kk-2libra-text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
   font-size: 14px !important;
+  font-variant-ligatures: none;
+  letter-spacing: normal !important;
   line-height: 1.65 !important;
+  tab-size: 2;
+}
+
+.kk-2libra-create-editor .w-md-editor-text-pre > code {
+  font: inherit !important;
+  letter-spacing: inherit !important;
 }
 
 .kk-2libra-create-node {
