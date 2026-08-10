@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         2Libra: V2EX 风格双栏
 // @namespace    https://github.com/kakarrot-dev/tampermonkey
-// @version      0.1.2
+// @version      0.1.3
 // @description  将 2Libra 调整为 V2EX Polish 风格的紧凑双栏、帖子正文与回复布局
 // @author       kakarrot
 // @match        https://2libra.com/*
@@ -334,15 +334,28 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 }
 
 .kk-2libra-post > div {
-  padding: 12px 14px 14px !important;
+  padding: 20px 22px !important;
+}
+
+.kk-2libra-post > div > :first-child {
+  min-height: 21px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  line-height: 21px;
 }
 
 .kk-2libra-post h1 {
-  margin-bottom: 8px !important;
+  margin-bottom: 10px !important;
   color: var(--kk-2libra-text);
-  font-size: 20px !important;
+  font-size: 22px !important;
   font-weight: 600;
-  line-height: 1.4 !important;
+  line-height: 33px !important;
+}
+
+.kk-2libra-post h1 + div {
+  margin-bottom: 12px !important;
+  font-size: 12px;
+  line-height: 21px;
 }
 
 .kk-2libra-post .prose {
@@ -395,15 +408,66 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 }
 
 .kk-2libra-reply > div > div {
-  padding: 10px !important;
+  padding: 20px 10px !important;
   border-radius: inherit !important;
 }
 
 .kk-2libra-reply article.c-item {
-  min-height: 40px;
+  min-height: 50px;
   color: var(--kk-2libra-text);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.kk-2libra-reply article.c-item > div {
+  position: relative;
+  min-height: 50px;
+}
+
+.kk-2libra-reply article.c-item header {
+  min-height: 21px;
+  margin-bottom: 4px !important;
+  padding-left: 55px;
+  line-height: 21px;
+}
+
+.kk-2libra-reply article.c-item header address {
+  gap: 8px;
+  min-width: 0;
+}
+
+.kk-2libra-reply article.c-item header address > div:first-child > div:first-child {
+  position: absolute !important;
+  top: 0;
+  left: -55px;
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+}
+
+.kk-2libra-reply article.c-item header address > div:first-child > div:first-child > button,
+.kk-2libra-reply article.c-item header address > div:first-child > div:first-child > button > div,
+.kk-2libra-reply article.c-item header address > div:first-child > div:first-child > button > div > div {
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+}
+
+.kk-2libra-reply article.c-item header address > div:first-child > div:first-child :is(img, svg, canvas) {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 5px !important;
+}
+
+.kk-2libra-reply article.c-item header address a[href^="/user/"] {
+  color: var(--kk-2libra-secondary) !important;
+  font-size: 13px !important;
+  font-weight: 600;
+}
+
+.kk-2libra-reply article.c-item > div > section {
+  margin: 0 0 0 55px !important;
+  min-height: 24px;
 }
 
 .kk-2libra-reply article.c-item .prose {
@@ -413,7 +477,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 }
 
 .kk-2libra-reply article.c-item .prose p {
-  margin-block: 4px !important;
+  margin-block: 0 !important;
   line-height: 1.6 !important;
 }
 
@@ -426,6 +490,28 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   width: 40px !important;
   height: 40px !important;
   border-radius: 5px !important;
+}
+
+.kk-2libra-reply article.c-item > div > footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin-left: 55px;
+  line-height: 24px;
+  transition: opacity 120ms ease;
+}
+
+@media (hover: hover) {
+  .kk-2libra-reply article.c-item > div > footer {
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .kk-2libra-reply article.c-item:hover > div > footer,
+  .kk-2libra-reply article.c-item:focus-within > div > footer {
+    pointer-events: auto;
+    opacity: 1;
+  }
 }
 
 .kk-2libra-reply article.c-item article.c-item {
@@ -489,7 +575,12 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   }
 
   .kk-2libra-post h1 {
-    font-size: 18px !important;
+    font-size: 20px !important;
+    line-height: 1.45 !important;
+  }
+
+  .kk-2libra-post > div {
+    padding: 16px !important;
   }
 
   .kk-2libra-editor {
