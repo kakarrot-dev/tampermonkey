@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         2Libra: V2EX 风格双栏
 // @namespace    https://github.com/kakarrot-dev/tampermonkey
-// @version      0.2.2
+// @version      0.2.5
 // @description  将 2Libra 调整为 V2EX Polish 风格的紧凑双栏、发帖、正文与回复布局
 // @author       kakarrot
 // @match        https://2libra.com/*
@@ -17,7 +17,12 @@
     left: 'kk-2libra-left',
     main: 'kk-2libra-main',
     right: 'kk-2libra-right',
+    postList: 'kk-2libra-post-list',
+    routeNav: 'kk-2libra-route-nav',
     profile: 'kk-2libra-profile',
+    profileContainer: 'kk-2libra-profile-container',
+    ad: 'kk-2libra-ad',
+    recent: 'kk-2libra-recent',
     post: 'kk-2libra-post',
     reply: 'kk-2libra-reply',
     replyFirst: 'kk-2libra-reply-first',
@@ -33,6 +38,114 @@
     createExtensions: 'kk-2libra-create-extensions',
   };
 
+  const POST_ROUTES = [
+    { href: '/post/hot/today', label: '今日热议' },
+    { href: '/post/hot/recent', label: '近期热议' },
+    { href: '/post/latest', label: '新发表' },
+  ];
+
+  function currentPath() {
+    return location.pathname.replace(/\/+$/, '') || '/';
+  }
+
+  function findSidebarColumn(seed) {
+    let node = seed;
+    while (node?.parentElement) {
+      const candidate = node.parentElement;
+      const shell = candidate.parentElement;
+      if (
+        shell?.children.length >= 2 &&
+        candidate === shell.lastElementChild &&
+        candidate.previousElementSibling?.matches('.flex-1.min-w-0')
+      ) {
+        return candidate;
+      }
+      node = candidate;
+    }
+    return null;
+  }
+
+  function findDirectChild(container, descendant) {
+    let node = descendant;
+    while (node && node.parentElement !== container) {
+      node = node.parentElement;
+    }
+    return node?.parentElement === container ? node : null;
+  }
+
+  function markSidebarCards(right) {
+    const profile = right
+      .querySelector('a[href="/user/setting/profile"]')
+      ?.closest('.card');
+    const profileContainer = findDirectChild(right, profile);
+    const recentHeading = Array.from(right.querySelectorAll('h4')).find((heading) =>
+      heading.textContent?.includes('最近访问')
+    );
+    const recent = findDirectChild(right, recentHeading?.closest('.card'));
+
+    profile?.classList.add(CLASS.profile);
+    profileContainer?.classList.add(CLASS.profileContainer);
+    recent?.classList.add(CLASS.recent);
+
+    return { profileContainer, recent };
+  }
+
+  function syncPostRouteNav(right, profileContainer, recent) {
+    const existing = right.querySelector(`.${CLASS.routeNav}`);
+
+    if (currentPath() === '/post/create') {
+      existing?.remove();
+      return;
+    }
+
+    const nav = existing || document.createElement('nav');
+    nav.className = `card ${CLASS.routeNav}`;
+    nav.setAttribute('aria-label', '帖子浏览');
+
+    if (!existing) {
+      const heading = document.createElement('h2');
+      heading.textContent = '帖子浏览';
+      nav.append(heading);
+
+      const list = document.createElement('div');
+      POST_ROUTES.forEach(({ href, label }) => {
+        const link = document.createElement('a');
+        link.href = href;
+        link.textContent = label;
+        list.append(link);
+      });
+      nav.append(list);
+    }
+
+    POST_ROUTES.forEach(({ href }) => {
+      const link = nav.querySelector(`a[href="${href}"]`);
+      const isCurrent = href === currentPath();
+      link?.classList.toggle('is-current', isCurrent);
+      if (isCurrent) {
+        link?.setAttribute('aria-current', 'page');
+      } else {
+        link?.removeAttribute('aria-current');
+      }
+    });
+
+    if (profileContainer) {
+      if (profileContainer.nextElementSibling !== nav) {
+        profileContainer.after(nav);
+      }
+    } else if (right.firstElementChild !== nav) {
+      right.prepend(nav);
+    }
+    if (recent && right.lastElementChild !== recent) {
+      right.append(recent);
+    }
+
+    Array.from(right.children).forEach((child) => {
+      const keep =
+        child === profileContainer || child === nav || child === recent;
+      child.classList.toggle(CLASS.ad, !keep);
+    });
+  }
+
   function findFieldset(main, label) {
     return Array.from(main.querySelectorAll('fieldset')).find((fieldset) =>
       Array.from(fieldset.children).some(
@@ -42,7 +155,7 @@
   }
 
   function markCreateLayout() {
-    if (location.pathname !== '/post/create') {
+    if (currentPath() !== '/post/create') {
       return false;
     }
 
@@ -80,12 +193,26 @@
   }
 
   function markLayout() {
+    if (currentPath() === '/post/create') {
+      markCreateLayout();
+      return;
+    }
+
     if (markCreateLayout()) {
       return;
     }
 
-    const anchor = document.querySelector('#post-list-ul, .post-body, article.c-item');
-    const main = anchor?.closest('.flex-1.min-w-0');
+    const postList =
+      document.querySelector('#post-list-ul') ||
+      document.querySelector('a.title-link[href^="/post/"]')?.closest('ul.card');
+    const anchor = postList || document.querySelector('.post-body, article.c-item');
+    const sidebarSeed =
+      document.querySelector('a[href="/user/setting/profile"]')?.closest('.card') ||
+      Array.from(document.querySelectorAll('h4')).find((heading) =>
+        heading.textContent?.includes('最近访问')
+      );
+    const fallbackRight = findSidebarColumn(sidebarSeed);
+    const main = anchor?.closest('.flex-1.min-w-0') || fallbackRight?.previousElementSibling;
     const shell = main?.parentElement;
 
     if (!main || !shell || shell.children.length < 2) {
@@ -94,16 +221,17 @@
 
     const mainIndex = Array.from(shell.children).indexOf(main);
     const left = mainIndex > 0 ? shell.children[mainIndex - 1] : null;
-    const right = main.nextElementSibling;
+    const right = main.nextElementSibling || fallbackRight;
 
     shell.classList.add(CLASS.shell);
     main.classList.add(CLASS.main);
+    postList?.classList.add(CLASS.postList);
     left?.classList.add(CLASS.left);
     right?.classList.add(CLASS.right);
-    right
-      ?.querySelector('a[href="/user/setting/profile"]')
-      ?.closest('.card')
-      ?.classList.add(CLASS.profile);
+    if (right) {
+      const { profileContainer, recent } = markSidebarCards(right);
+      syncPostRouteNav(right, profileContainer, recent);
+    }
 
     document.querySelector('.post-body')?.classList.add(CLASS.post);
     const replyCards = Array.from(document.querySelectorAll('article.c-item'))
@@ -199,11 +327,11 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   box-shadow: var(--kk-2libra-shadow);
 }
 
-.kk-2libra-main #post-list-ul {
+.kk-2libra-main .kk-2libra-post-list {
   overflow: hidden;
 }
 
-.kk-2libra-main #post-list-ul > div:first-child {
+.kk-2libra-main .kk-2libra-post-list > div:first-child {
   min-height: 42px;
   padding: 8px 10px !important;
   font-size: 14px;
@@ -211,7 +339,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   border-color: var(--kk-2libra-border) !important;
 }
 
-.kk-2libra-main #post-list-ul > li {
+.kk-2libra-main .kk-2libra-post-list > li {
   min-height: 89px;
   gap: 10px !important;
   padding: 20px 10px !important;
@@ -220,11 +348,11 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   border-color: var(--kk-2libra-border) !important;
 }
 
-.kk-2libra-main #post-list-ul > li:hover {
+.kk-2libra-main .kk-2libra-post-list > li:hover {
   background: #f8fafc;
 }
 
-.kk-2libra-main #post-list-ul > li a[href^="/post/"] {
+.kk-2libra-main .kk-2libra-post-list > li a[href^="/post/"] {
   color: var(--kk-2libra-text);
   font-size: 15px;
   font-weight: 500;
@@ -232,41 +360,41 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   text-decoration: none;
 }
 
-.kk-2libra-main #post-list-ul > li :is(time, a[href^="/user/"], a[href^="/node/"]) {
+.kk-2libra-main .kk-2libra-post-list > li :is(time, a[href^="/user/"], a[href^="/node/"]) {
   color: var(--kk-2libra-muted);
   font-size: 12px;
   line-height: 1.5;
 }
 
-.kk-2libra-main #post-list-ul > li a[href^="/node/"] {
+.kk-2libra-main .kk-2libra-post-list > li a[href^="/node/"] {
   padding: 2px 5px;
   color: var(--kk-2libra-secondary);
   background: var(--kk-2libra-subtle);
   border-radius: 4px;
 }
 
-.kk-2libra-main #post-list-ul > li div.flex.items-center.gap-2:has(> a[href*="?commentId="]) {
+.kk-2libra-main .kk-2libra-post-list > li div.flex.items-center.gap-2:has(> a[href*="?commentId="]) {
   display: none !important;
 }
 
-.kk-2libra-main #post-list-ul > li span[class~="w-[0.0625rem]"] {
+.kk-2libra-main .kk-2libra-post-list > li span[class~="w-[0.0625rem]"] {
   display: none !important;
 }
 
-.kk-2libra-main #post-list-ul > li button > img {
+.kk-2libra-main .kk-2libra-post-list > li button > img {
   width: 48px !important;
   height: 48px !important;
   border-radius: 5px !important;
 }
 
-.kk-2libra-main #post-list-ul > li button:has(> img),
+.kk-2libra-main .kk-2libra-post-list > li button:has(> img),
 .kk-2libra-reply article.c-item button:has(> img) {
   padding: 0 !important;
   line-height: 0;
   background: transparent;
 }
 
-.kk-2libra-main #post-list-ul > li button:has(> img) {
+.kk-2libra-main .kk-2libra-post-list > li button:has(> img) {
   min-width: 48px;
   min-height: 48px;
 }
@@ -292,6 +420,47 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 
 .kk-2libra-right .card {
   overflow: hidden;
+}
+
+.kk-2libra-right > .kk-2libra-ad {
+  display: none !important;
+}
+
+.kk-2libra-route-nav > h2 {
+  min-height: var(--kk-2libra-sidebar-header-height);
+  margin: 0;
+  padding: 10px var(--kk-2libra-sidebar-padding) 9px;
+  border-bottom: 1px solid var(--kk-2libra-border);
+}
+
+.kk-2libra-route-nav > div {
+  display: grid;
+  padding: 5px;
+}
+
+.kk-2libra-route-nav a {
+  display: flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 7px 10px;
+  color: var(--kk-2libra-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.kk-2libra-route-nav a.is-current {
+  color: var(--kk-2libra-text);
+  background: var(--kk-2libra-subtle);
+}
+
+@media (hover: hover) {
+  .kk-2libra-route-nav a:hover {
+    color: var(--kk-2libra-text);
+    background: #f8fafc;
+  }
 }
 
 .kk-2libra-right :is(h2, h3, h4) {
@@ -837,6 +1006,10 @@ body.kk-2libra-create {
   }
 }
 
+.kk-2libra-create-editor .w-md-editor-text {
+  padding: 0 !important;
+}
+
 .kk-2libra-create-editor .w-md-editor-text-input,
 .kk-2libra-create-editor .w-md-editor-text-pre {
   padding: 14px 16px !important;
@@ -990,7 +1163,7 @@ body.kk-2libra-create {
     max-width: 100% !important;
   }
 
-  .kk-2libra-main #post-list-ul > li {
+  .kk-2libra-main .kk-2libra-post-list > li {
     padding-inline: 8px !important;
   }
 
