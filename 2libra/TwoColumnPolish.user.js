@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         2Libra: V2EX 风格双栏
 // @namespace    https://github.com/kakarrot-dev/tampermonkey
-// @version      0.1.1
+// @version      0.1.2
 // @description  将 2Libra 调整为 V2EX Polish 风格的紧凑双栏、帖子正文与回复布局
 // @author       kakarrot
 // @match        https://2libra.com/*
@@ -22,6 +22,7 @@
     reply: 'kk-2libra-reply',
     replyFirst: 'kk-2libra-reply-first',
     replyLast: 'kk-2libra-reply-last',
+    editor: 'kk-2libra-editor',
   };
 
   function markLayout() {
@@ -57,6 +58,11 @@
     });
     replyCards[0]?.classList.add(CLASS.replyFirst);
     replyCards.at(-1)?.classList.add(CLASS.replyLast);
+
+    const editorHeading = Array.from(main.querySelectorAll('h3')).find((heading) =>
+      heading.textContent?.includes('发表一个评论')
+    );
+    editorHeading?.parentElement?.parentElement?.classList.add(CLASS.editor);
   }
 
   let scheduled = false;
@@ -444,6 +450,15 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   outline-offset: 1px;
 }
 
+.kk-2libra-editor {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 18px !important;
+  background: var(--kk-2libra-surface) !important;
+  border-radius: var(--kk-2libra-radius);
+  box-shadow: var(--kk-2libra-shadow);
+}
+
 @media (min-width: 960px) {
   .kk-2libra-left {
     display: none !important;
@@ -475,6 +490,10 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 
   .kk-2libra-post h1 {
     font-size: 18px !important;
+  }
+
+  .kk-2libra-editor {
+    padding: 14px !important;
   }
 }
 `);
