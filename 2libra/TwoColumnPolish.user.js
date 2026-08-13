@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         2Libra: V2EX 风格双栏
 // @namespace    https://github.com/kakarrot-dev/tampermonkey
-// @version      0.3.9
+// @version      0.3.10
 // @description  将 2Libra 调整为 V2EX Polish 风格的紧凑双栏、发帖、正文与回复布局
 // @author       kakarrot
 // @match        https://2libra.com/*
@@ -1537,9 +1537,10 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   box-shadow: var(--kk-2libra-shadow);
 }
 
-.kk-2libra-editor .w-md-editor-toolbar {
-  overflow-x: auto;
-  overflow-y: hidden;
+.kk-2libra-editor .w-md-editor-toolbar,
+.kk-2libra-create-editor .w-md-editor-toolbar {
+  flex: 0 0 auto;
+  overflow: visible;
 }
 
 .kk-2libra-editor {
@@ -1572,9 +1573,19 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   border-radius: 7px !important;
 }
 
+.kk-2libra-editor .w-md-editor,
+.kk-2libra-create-editor .w-md-editor {
+  height: auto !important;
+}
+
 .kk-2libra-editor .w-md-editor {
   border: 1px solid #cbd5e1;
   box-shadow: none;
+}
+
+.kk-2libra-editor .w-md-editor-content,
+.kk-2libra-create-editor .w-md-editor-content {
+  min-height: 180px;
 }
 
 .kk-2libra-editor .w-md-editor-toolbar {
@@ -1590,12 +1601,25 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   border-radius: 4px;
 }
 
+.kk-2libra-editor .w-md-editor-text {
+  padding: 0 !important;
+}
+
 .kk-2libra-editor .w-md-editor-text-input,
 .kk-2libra-editor .w-md-editor-text-pre {
   padding: 14px 16px !important;
   color: var(--kk-2libra-text) !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
   font-size: 14px !important;
+  font-variant-ligatures: none;
+  letter-spacing: normal !important;
   line-height: 1.65 !important;
+  tab-size: 2;
+}
+
+.kk-2libra-editor .w-md-editor-text-pre > code {
+  font: inherit !important;
+  letter-spacing: inherit !important;
 }
 
 .kk-2libra-editor .my-2 {

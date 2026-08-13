@@ -26,7 +26,7 @@
 | 脚本 | 类型 | 匹配站点 | 版本 | 安装 |
 | --- | --- | --- | --- | --- |
 | X 阅读增强 | 自有脚本 | `x.com`、`twitter.com` | `0.2.2` | [安装原始脚本](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/X/XReadingEnhance.user.js) |
-| 2Libra V2EX 风格双栏 | 自有脚本 | `2libra.com` | `0.3.9` | [安装原始脚本](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/2libra/TwoColumnPolish.user.js) |
+| 2Libra V2EX 风格双栏 | 自有脚本 | `2libra.com` | `0.3.10` | [安装原始脚本](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/2libra/TwoColumnPolish.user.js) |
 | V2EX Polish | 第三方快照 | `v2ex.com` | `2.0.6` | [查看源码](<V2EX/▲V2EX Polish - 体验更现代化的 V2EX 🟢-2.0.6.user.js>) · [上游项目](https://v2p.leoku.dev/) |
 
 ### X 阅读增强

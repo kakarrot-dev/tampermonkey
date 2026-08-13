@@ -26,7 +26,7 @@ This repository keeps personal Tampermonkey and Violentmonkey scripts in plain J
 | Script | Type | Matches | Version | Install |
 | --- | --- | --- | --- | --- |
 | X Reading Enhance | Original | `x.com`, `twitter.com` | `0.2.2` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/X/XReadingEnhance.user.js) |
-| 2Libra V2EX-style Two-column Layout | Original | `2libra.com` | `0.3.9` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/2libra/TwoColumnPolish.user.js) |
+| 2Libra V2EX-style Two-column Layout | Original | `2libra.com` | `0.3.10` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/2libra/TwoColumnPolish.user.js) |
 | V2EX Polish | Third-party snapshot | `v2ex.com` | `2.0.6` | [Open source file](<V2EX/▲V2EX Polish - 体验更现代化的 V2EX 🟢-2.0.6.user.js>) · [Upstream](https://v2p.leoku.dev/) |
 
 ### X Reading Enhance
