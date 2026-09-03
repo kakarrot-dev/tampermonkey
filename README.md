@@ -25,17 +25,17 @@ This repository keeps personal Tampermonkey and Violentmonkey scripts in plain J
 
 | Script | Type | Matches | Version | Install |
 | --- | --- | --- | --- | --- |
-| X Reading Enhance | Original | `x.com`, `twitter.com` | `0.2.2` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/X/XReadingEnhance.user.js) |
+| X Reading Enhance | Original | `x.com`, `twitter.com` | `0.3.0` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/X/XReadingEnhance.user.js) |
 | 2Libra V2EX-style Two-column Layout | Original | `2libra.com` | `0.3.10` | [Install raw script](https://raw.githubusercontent.com/kakarrot-dev/tampermonkey/main/2libra/TwoColumnPolish.user.js) |
 | V2EX Polish | Third-party snapshot | `v2ex.com` | `2.0.6` | [Open source file](<V2EX/▲V2EX Polish - 体验更现代化的 V2EX 🟢-2.0.6.user.js>) · [Upstream](https://v2p.leoku.dev/) |
 
 ### X Reading Enhance
 
-Hides the right column and floating controls, widens the reading column, and tightens spacing, line height, and media height with CSS only.
+Hides the right column and floating controls, widens the reading column, tightens spacing, line height, and media height, and automatically confirms unfollow actions initiated from a Following button.
 
 - Grants: `GM_addStyle`
 - Source: [`X/XReadingEnhance.user.js`](X/XReadingEnhance.user.js)
-- Check after install: home, profile, and post detail pages at 1280, 1440, and 1920 pixels
+- Check after install: home, profile, and post detail pages at 1280, 1440, and 1920 pixels; click a Following button and confirm that the account is unfollowed without a second click
 
 ### 2Libra V2EX-style Two-column Layout
 

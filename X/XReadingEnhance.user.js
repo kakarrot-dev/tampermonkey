@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         X: 阅读增强
 // @namespace    https://github.com/kakarrot-dev/tampermonkey
-// @version      0.2.2
-// @description  隐藏右栏与右下浮钮、主栏居中留白且与内层同宽、加压间距/行高/媒体高度（仅 CSS）
+// @version      0.3.0
+// @description  优化 X 阅读布局与密度，并在取消关注时自动确认
 // @author       kakarrot
 // @match        https://x.com/*
 // @match        https://twitter.com/*
@@ -88,4 +88,37 @@ article img,
   display: none;
 }
 `);
+
+  let pendingUnfollowConfirmation = false;
+  let pendingUnfollowTimer;
+
+  function clearPendingUnfollow() {
+    pendingUnfollowConfirmation = false;
+    window.clearTimeout(pendingUnfollowTimer);
+  }
+
+  // 只确认由用户点击“正在关注”触发的弹窗，避免误操作其它 confirmation sheet。
+  document.addEventListener('click', (event) => {
+    if (!(event.target instanceof Element)) return;
+    if (!event.target.closest('button[data-testid$="-unfollow"]')) return;
+
+    pendingUnfollowConfirmation = true;
+    window.clearTimeout(pendingUnfollowTimer);
+    pendingUnfollowTimer = window.setTimeout(clearPendingUnfollow, 3000);
+  }, true);
+
+  const unfollowConfirmationObserver = new MutationObserver(() => {
+    if (!pendingUnfollowConfirmation) return;
+
+    const confirmButton = document.querySelector('[data-testid="confirmationSheetConfirm"]');
+    if (!confirmButton) return;
+
+    clearPendingUnfollow();
+    confirmButton.click();
+  });
+
+  unfollowConfirmationObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
 })();
