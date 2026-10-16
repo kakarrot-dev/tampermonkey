@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         2Libra: V2EX 风格双栏
 // @namespace    https://github.com/kakarrot-dev/tampermonkey
-// @version      0.3.10
+// @version      0.3.12
 // @description  将 2Libra 调整为 V2EX Polish 风格的紧凑双栏、发帖、正文与回复布局
 // @author       kakarrot
 // @match        https://2libra.com/*
@@ -12,6 +12,21 @@
 (function () {
   'use strict';
 
+  function syncStoredTheme() {
+    try {
+      const storedTheme = localStorage.getItem('theme');
+      if (
+        !document.documentElement.hasAttribute('data-theme') &&
+        (storedTheme === 'light' || storedTheme === 'dark')
+      ) {
+        document.documentElement.setAttribute('data-theme', storedTheme);
+      }
+    } catch {
+      // 存储不可用时交还给站点自己的主题初始化逻辑。
+    }
+  }
+
+  syncStoredTheme();
   document.documentElement.classList.add('kk-2libra-booting');
 
   const CLASS = {
@@ -392,7 +407,7 @@
 
   GM_addStyle(`
 :root.kk-2libra-booting {
-  background: #f2f3f5;
+  background: var(--kk-2libra-bg, #f2f3f5);
 }
 
 :root.kk-2libra-booting body {
@@ -407,6 +422,17 @@
   --kk-2libra-muted: #94a3b8;
   --kk-2libra-subtle: #f1f5f9;
   --kk-2libra-border: #e2e8f0;
+  --kk-2libra-hover: #f8fafc;
+  --kk-2libra-hover-strong: #e2e8f0;
+  --kk-2libra-control-bg: #f8fafc;
+  --kk-2libra-control-border: #cbd5e1;
+  --kk-2libra-focus-border: #94a3b8;
+  --kk-2libra-focus-ring: rgb(148 163 184 / 25%);
+  --kk-2libra-focus-ring-soft: rgb(148 163 184 / 22%);
+  --kk-2libra-reply-guide: #d7e0ea;
+  --kk-2libra-warning-bg: #fffbeb;
+  --kk-2libra-warning-border: #f4d58d;
+  --kk-2libra-warning-text: #9a6700;
   --kk-2libra-main-width: 805px;
   --kk-2libra-right-width: 270px;
   --kk-2libra-column-gap: 25px;
@@ -422,6 +448,29 @@
   --kk-2libra-nested-reply-row-padding: 8px;
   --kk-2libra-reply-stack-gap: 6px;
   --kk-2libra-reply-group-bg: #f6f8fb;
+}
+
+:root[data-theme="dark"] {
+  --kk-2libra-bg: var(--color-base-300, #181c22);
+  --kk-2libra-surface: var(--color-base-100, #1d232a);
+  --kk-2libra-text: var(--color-base-content, #f2f4f7);
+  --kk-2libra-secondary: color-mix(in oklch, var(--color-base-content, #f2f4f7) 78%, var(--color-base-100, #1d232a));
+  --kk-2libra-muted: color-mix(in oklch, var(--color-base-content, #f2f4f7) 64%, var(--color-base-100, #1d232a));
+  --kk-2libra-subtle: var(--color-base-200, #1a1f26);
+  --kk-2libra-border: color-mix(in oklch, var(--color-base-content, #f2f4f7) 16%, var(--color-base-100, #1d232a));
+  --kk-2libra-hover: color-mix(in oklch, var(--color-base-content, #f2f4f7) 7%, var(--color-base-100, #1d232a));
+  --kk-2libra-hover-strong: color-mix(in oklch, var(--color-base-content, #f2f4f7) 14%, var(--color-base-100, #1d232a));
+  --kk-2libra-control-bg: var(--color-base-200, #1a1f26);
+  --kk-2libra-control-border: color-mix(in oklch, var(--color-base-content, #f2f4f7) 22%, var(--color-base-100, #1d232a));
+  --kk-2libra-focus-border: color-mix(in oklch, var(--color-base-content, #f2f4f7) 48%, var(--color-base-100, #1d232a));
+  --kk-2libra-focus-ring: color-mix(in srgb, var(--color-base-content, #f2f4f7) 25%, transparent);
+  --kk-2libra-focus-ring-soft: color-mix(in srgb, var(--color-base-content, #f2f4f7) 22%, transparent);
+  --kk-2libra-reply-guide: color-mix(in oklch, var(--color-base-content, #f2f4f7) 20%, var(--color-base-100, #1d232a));
+  --kk-2libra-warning-bg: color-mix(in oklab, var(--color-warning, #f2c94c) 12%, var(--color-base-100, #1d232a));
+  --kk-2libra-warning-border: color-mix(in oklab, var(--color-warning, #f2c94c) 48%, var(--color-base-100, #1d232a));
+  --kk-2libra-warning-text: var(--color-warning, #f2c94c);
+  --kk-2libra-shadow: 0 3px 5px rgb(0 0 0 / 20%);
+  --kk-2libra-reply-group-bg: var(--color-base-200, #1a1f26);
 }
 
 html:has(.kk-2libra-shell),
@@ -490,7 +539,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 }
 
 .kk-2libra-main .kk-2libra-post-list > li:hover {
-  background: #f8fafc;
+  background: var(--kk-2libra-hover);
 }
 
 .kk-2libra-main .kk-2libra-post-list > li a[href^="/post/"] {
@@ -606,7 +655,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 @media (hover: hover) {
   .kk-2libra-route-nav a:hover {
     color: var(--kk-2libra-text);
-    background: #f8fafc;
+    background: var(--kk-2libra-hover);
   }
 }
 
@@ -648,7 +697,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 
 @media (hover: hover) {
   .kk-2libra-right .kk-2libra-recent .card-body > h4 + div > div:hover {
-    background: #f8fafc;
+    background: var(--kk-2libra-hover);
   }
 
   .kk-2libra-right .kk-2libra-recent .card-body > h4 + div > div > a[href^="/post/"]:hover {
@@ -754,6 +803,20 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   white-space: nowrap;
 }
 
+.kk-2libra-profile > .card-body > :nth-child(3) .btn {
+  font-size: 11px;
+}
+
+.kk-2libra-profile > .card-body > :nth-child(3) > div:first-child > a {
+  font-size: 11px !important;
+  line-height: 16px;
+}
+
+.kk-2libra-profile > .card-body > :nth-child(3) > div:first-child > a :is(div, span, number-flow-react) {
+  font-size: inherit !important;
+  line-height: inherit;
+}
+
 .kk-2libra-profile > .card-body > :last-child {
   display: flex;
   gap: 4px !important;
@@ -853,7 +916,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 
 @media (hover: hover) {
   .kk-2libra-right .card-body:has(> h4) > h4 + div > div:hover {
-    background: #f8fafc;
+    background: var(--kk-2libra-hover);
   }
 
   .kk-2libra-right .card-body:has(> h4) > h4 a:hover,
@@ -871,7 +934,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   min-height: 28px;
   height: 28px;
   padding-inline: 6px !important;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .kk-2libra-profile > .card-body > :last-child > div:last-child > button {
@@ -882,6 +945,17 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 
 .kk-2libra-profile > .card-body > :last-child > div:last-child > button > span {
   display: none !important;
+}
+
+.kk-2libra-profile > .card-body > :last-child .btn.tooltip > .text-xs,
+.kk-2libra-profile > .card-body > :last-child .btn.tooltip > .text-xs number-flow-react {
+  font-size: inherit !important;
+  line-height: inherit;
+}
+
+.kk-2libra-profile > .card-body > :last-child .btn.tooltip::before {
+  font-size: 10px !important;
+  line-height: 13px !important;
 }
 
 .kk-2libra-profile > .card-body > :nth-child(3) > div:last-child > .relative {
@@ -1026,7 +1100,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 
 @media (hover: hover) {
   .kk-2libra-user-page [role="tablist"] + div > ul > li:hover {
-    background: #f8fafc;
+    background: var(--kk-2libra-hover);
   }
 }
 
@@ -1176,8 +1250,8 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 .kk-2libra-post-pool {
   margin: 8px 0 10px !important;
   padding: 10px 12px;
-  background: #fffbeb;
-  border-left: 3px solid #f4d58d;
+  background: var(--kk-2libra-warning-bg);
+  border-left: 3px solid var(--kk-2libra-warning-border);
   border-radius: 4px;
 }
 
@@ -1200,7 +1274,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 }
 
 .kk-2libra-post-pool .text-warning {
-  color: #9a6700;
+  color: var(--kk-2libra-warning-text);
   font-size: 13px;
 }
 
@@ -1312,7 +1386,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   margin: 0 10px 12px var(--kk-2libra-reply-indent);
   padding: 4px 8px 4px 10px;
   background: var(--kk-2libra-reply-group-bg) !important;
-  border-left: 2px solid #d7e0ea;
+  border-left: 2px solid var(--kk-2libra-reply-guide);
   border-radius: 0 !important;
 }
 
@@ -1325,7 +1399,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 
 .kk-2libra-reply .l-3-comment {
   padding-left: 10px !important;
-  border-left: 1px solid #d7e0ea !important;
+  border-left: 1px solid var(--kk-2libra-reply-guide) !important;
 }
 
 .kk-2libra-reply :is(.level-2, .level-3) > [class*="pl-"] {
@@ -1515,14 +1589,14 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 .kk-2libra-main [contenteditable="true"] {
   color: var(--kk-2libra-text);
   font: 14px/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  border-color: #cbd5e1;
+  border-color: var(--kk-2libra-control-border);
   border-radius: 6px;
 }
 
 .kk-2libra-main textarea:focus,
 .kk-2libra-main [contenteditable="true"]:focus {
-  border-color: var(--kk-2libra-secondary);
-  outline: 2px solid rgb(148 163 184 / 25%);
+  border-color: var(--kk-2libra-focus-border);
+  outline: 2px solid var(--kk-2libra-focus-ring);
   outline-offset: 1px;
 }
 
@@ -1569,7 +1643,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 .kk-2libra-editor .skeleton,
 .kk-2libra-editor .w-md-editor {
   min-height: 220px !important;
-  background: #f8fafc !important;
+  background: var(--kk-2libra-control-bg) !important;
   border-radius: 7px !important;
 }
 
@@ -1579,7 +1653,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
 }
 
 .kk-2libra-editor .w-md-editor {
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--kk-2libra-control-border);
   box-shadow: none;
 }
 
@@ -1592,7 +1666,7 @@ body:has(.kk-2libra-shell) > div > div.bg-base-100 {
   min-height: 38px;
   padding: 5px 8px;
   background: var(--kk-2libra-subtle);
-  border-bottom: 1px dashed #cbd5e1;
+  border-bottom: 1px dashed var(--kk-2libra-control-border);
 }
 
 .kk-2libra-editor .w-md-editor-toolbar button {
@@ -1697,16 +1771,16 @@ body.kk-2libra-create {
   padding: 0 16px;
   color: var(--kk-2libra-text);
   font-size: 16px;
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
+  background: var(--kk-2libra-control-bg);
+  border: 1px solid var(--kk-2libra-control-border);
   border-radius: 7px;
   box-shadow: none;
 }
 
 .kk-2libra-create-title .input:focus {
   background: var(--kk-2libra-surface);
-  border-color: #94a3b8;
-  outline: 2px solid rgb(148 163 184 / 22%);
+  border-color: var(--kk-2libra-focus-border);
+  outline: 2px solid var(--kk-2libra-focus-ring-soft);
   outline-offset: 1px;
 }
 
@@ -1740,8 +1814,8 @@ body.kk-2libra-create {
 
 .kk-2libra-create-editor .skeleton {
   min-height: 360px !important;
-  background: #f8fafc !important;
-  border: 1px solid #cbd5e1;
+  background: var(--kk-2libra-control-bg) !important;
+  border: 1px solid var(--kk-2libra-control-border);
   border-radius: 7px !important;
 }
 
@@ -1768,7 +1842,7 @@ body.kk-2libra-create {
 
 @media (hover: hover) {
   .kk-2libra-create-editor .w-md-editor-toolbar button:hover {
-    background: #e2e8f0;
+    background: var(--kk-2libra-hover-strong);
   }
 }
 
@@ -1835,7 +1909,7 @@ body.kk-2libra-create {
 @media (hover: hover) {
   .kk-2libra-create-actions .btn-primary:hover {
     color: var(--kk-2libra-text);
-    background: #e2e8f0;
+    background: var(--kk-2libra-hover-strong);
   }
 }
 
@@ -2012,19 +2086,19 @@ body.kk-2libra-create {
   function initialize() {
     enableSameTabPostNavigation();
     markLayout();
-    new MutationObserver(scheduleMarkLayout).observe(document.body, {
+    // 顶部导航会重新解析页面；从 document-start 监听根节点，避免等到
+    // DOMContentLoaded 才解除启动遮罩而产生空白闪屏。
+    new MutationObserver(scheduleMarkLayout).observe(document.documentElement, {
       childList: true,
       subtree: true,
     });
+
+    document.addEventListener('DOMContentLoaded', scheduleMarkLayout, { once: true });
 
     window.setTimeout(() => {
       document.documentElement.classList.remove('kk-2libra-booting');
     }, 1500);
   }
 
-  if (document.body) {
-    initialize();
-  } else {
-    document.addEventListener('DOMContentLoaded', initialize, { once: true });
-  }
+  initialize();
 })();
